@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Para mi niña linda</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4ecdc;--paper:#fbf6ea;--ink:#3b2a20;--soft:#7a6252;--sage:#6f8f72;--coffee:#6b4430;--terra:#b5694a;--line:rgba(107,68,48,.25)}
+@media (prefers-color-scheme:dark){:root{--bg:#1f1a15;--paper:#2a231c;--ink:#f1e6d3;--soft:#c2ad96;--sage:#9bbd9d;--coffee:#d1a582;--terra:#e0906d;--line:rgba(209,165,130,.3)}}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:'Cormorant Garamond',Georgia,serif;font-size:1.3rem;line-height:1.8;min-height:100vh;overflow-x:hidden}
+#leaves{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.leaf{position:absolute;top:-40px;opacity:.5;animation:fall linear infinite}
+@keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
+
+/* bienvenida */
+#welcome{position:fixed;inset:0;z-index:50;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;transition:opacity 1.2s,visibility 1.2s}
+#welcome.gone{opacity:0;visibility:hidden}
+#welcome h1{font-family:'Caveat',cursive;font-size:clamp(2.4rem,9vw,3.6rem);color:var(--coffee);line-height:1.1;margin:8px 0}
+#welcome p{color:var(--soft);font-style:italic;max-width:420px}
+.hoop{width:130px;height:130px}
+.beat{transform-origin:60px 62px;animation:beat 2.4s ease-in-out infinite}
+@keyframes beat{0%,100%{transform:scale(1)}15%{transform:scale(1.07)}30%{transform:scale(1)}45%{transform:scale(1.05)}}
+.btn{margin-top:28px;font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:600;letter-spacing:.06em;color:var(--paper);background:var(--coffee);border:0;border-radius:40px;padding:14px 34px;cursor:pointer;box-shadow:0 8px 20px rgba(107,68,48,.3);transition:transform .25s,background .25s}
+.btn:hover{transform:translateY(-2px);background:var(--terra)}
+
+/* carta */
+main{position:relative;z-index:1;max-width:680px;margin:0 auto;padding:60px 22px 100px}
+.sheet{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:clamp(28px,6vw,60px);box-shadow:0 20px 50px rgba(59,42,32,.15);position:relative}
+.sheet::before{content:"";position:absolute;left:clamp(14px,3vw,26px);top:24px;bottom:24px;width:2px;background:linear-gradient(var(--sage),transparent);opacity:.5}
+.to{font-family:'Caveat',cursive;font-size:2.2rem;color:var(--coffee);line-height:1.2;margin-bottom:6px}
+.chap{margin-top:38px;opacity:0;transform:translateY(24px);transition:opacity 1s,transform 1s}
+.chap.in{opacity:1;transform:none}
+.chap h2{font-family:'Caveat',cursive;font-weight:700;font-size:1.6rem;color:var(--terra);display:flex;align-items:center;gap:12px}
+.chap h2::after{content:"";flex:1;height:1px;background:var(--line)}
+.chap p{margin-top:8px}
+.sign{margin-top:44px;text-align:right;font-family:'Caveat',cursive;font-size:1.8rem;color:var(--coffee);opacity:0;transition:opacity 1.5s}
+.sign.in{opacity:1}
+.end{text-align:center;margin-top:50px}
+
+/* dedicatoria */
+#dedic{position:fixed;inset:0;z-index:40;background:rgba(31,26,21,.75);display:flex;align-items:center;justify-content:center;padding:18px;opacity:0;visibility:hidden;transition:.6s;overflow:auto}
+#dedic.open{opacity:1;visibility:visible}
+.card{background:var(--paper);border-radius:8px;max-width:440px;width:100%;padding:26px 24px 30px;text-align:center;transform:scale(.9) translateY(20px);transition:transform .7s;position:relative;margin:auto}
+#dedic.open .card{transform:none}
+.photo{background:#fff;padding:12px 12px 42px;box-shadow:0 10px 26px rgba(0,0,0,.25);transform:rotate(-2.5deg);margin:6px auto 22px;max-width:300px;position:relative}
+.photo img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;background:#e8dcc6}
+.photo::after{content:"tú y yo";position:absolute;bottom:8px;left:0;right:0;font-family:'Caveat',cursive;font-size:1.4rem;color:#6b4430}
+.card p{font-size:1.2rem;line-height:1.65}
+.card .big{font-family:'Caveat',cursive;font-size:1.9rem;color:var(--coffee);margin-bottom:6px;line-height:1.2}
+.x{position:absolute;top:8px;right:14px;background:none;border:0;font-size:1.8rem;color:var(--soft);cursor:pointer}
+#mute{position:fixed;top:14px;right:14px;z-index:60;width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:var(--paper);color:var(--coffee);cursor:pointer;display:none}
+#mute svg{width:20px;height:20px}
+</style>
+</head>
+<body>
+<div id="leaves"></div>
+
+<button id="mute" aria-label="Música">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18V6l10-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="16" cy="16" r="3"/><path id="cut" d="M3 3l18 18" style="display:none"/></svg>
+</button>
+
+<section id="welcome">
+  <svg class="hoop" viewBox="0 0 120 120">
+    <defs><pattern id="x" width="6" height="6" patternUnits="userSpaceOnUse"><path d="M1 1L5 5M5 1L1 5" stroke="var(--terra)" stroke-width="1.1" stroke-linecap="round" opacity=".75"/></pattern></defs>
+    <circle cx="60" cy="60" r="54" fill="none" stroke="var(--coffee)" stroke-width="6"/>
+    <circle cx="60" cy="60" r="50" fill="var(--paper)" stroke="var(--line)" stroke-width="1"/>
+    <g class="beat">
+      <path d="M60 90C24 66 27 36 46 36c8 0 12 4 14 9 2-5 6-9 14-9 19 0 22 30-14 54z" fill="url(#x)"/>
+      <path d="M60 90C24 66 27 36 46 36c8 0 12 4 14 9 2-5 6-9 14-9 19 0 22 30-14 54z" fill="none" stroke="var(--terra)" stroke-width="2.4" stroke-dasharray="5 4" stroke-linecap="round"/>
+    </g>
+    <path d="M22 84c6-4 10-3 14 1M98 84c-6-4-10-3-14 1M60 100v-5" fill="none" stroke="var(--sage)" stroke-width="2" stroke-dasharray="3 3" stroke-linecap="round"/>
+  </svg>
+  <h1>Para mi niña linda</h1>
+  <p>Una carta hecha solo para ti, mi Princesita Hermosa.</p>
+  <button class="btn" id="open">Abrir</button>
+</section>
+
+<main>
+  <div class="sheet">
+    <div class="to">Mi niña linda, mi princesita hermosa,</div>
+
+    <div class="chap"><h2>Lo que eres para mí</h2>
+      <p>Te quiero muchísimo. Eres todo para mí. No hay un solo momento del día en que no piense en ti, ni uno en que no recuerde tu mirada a través de mi corazón.</p></div>
+
+    <div class="chap"><h2>Tu paz</h2>
+      <p>En todo de ti encuentro paz, amor, atención e interés. Todo lo que eres lo amo y lo adoro con cada parte que existe de mí.</p></div>
+
+    <div class="chap"><h2>Tu brillo</h2>
+      <p>Eres tan única y tan linda que no necesitas nada para lucir espectacular y hermosa, porque tú eres quien hace que las cosas sean lindas. Tienes un brillo único, y es puramente tuyo.</p></div>
+
+    <div class="chap"><h2>Para siempre</h2>
+      <p>Quiero recordarte lo mucho que significas para mí. Te amo con todo mi corazón y te amaré hasta el fin de mis días, y aún más que eso.</p></div>
+
+    <div class="sign">Tu Latoso que tanto te adora, FER</div>
+    <div class="end"><button class="btn" id="dbtn">Una dedicatoria para ti</button></div>
+  </div>
+</main>
+
+<div id="dedic">
+  <div class="card">
+    <button class="x" id="close" aria-label="Cerrar">&times;</button>
+    <div class="photo"><img src="nosotros.jpg" alt="Nosotros" onerror="this.style.opacity=.3"></div>
+    <div class="big">Para ti, mi amor</div>
+    <p>Contigo todo es paz, todo es bonito y todo tiene sentido. Gracias por ser tú. Gracias por cada momento y por cada cariño, por entregar todo lo que eres y por ser tú misma conmigo, por hacerme sentir tan querido aunque lleguen a ser días pesados, pero siempre estás para mí, Te Quiero y Te AMO por todo lo que eres y serás. Te amo con todo mi corazón, y con todo lo que soy, porque eres todo lo que yo siempre quiero y querré, hoy, mañana y siempre.</p>
+  </div>
+</div>
+
+<audio id="song" src="musica.mp3" loop preload="auto"></audio>
+
+<script>
+// hojas cayendo
+(function(){
+  var box=document.getElementById('leaves'),cols=['#6f8f72','#9bbd9d','#b5694a','#8a6a4a'];
+  for(var i=0;i<14;i++){
+    var d=document.createElement('div');d.className='leaf';
+    d.style.left=Math.random()*100+'%';
+    d.style.animationDuration=(14+Math.random()*14)+'s';
+    d.style.animationDelay=(-Math.random()*20)+'s';
+    var s=14+Math.random()*16;
+    d.innerHTML='<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24"><path d="M4 20C4 9 11 4 21 3c0 10-5 17-15 17z" fill="'+cols[i%4]+'"/><path d="M4 20L15 9" stroke="#fff" stroke-opacity=".5" fill="none"/></svg>';
+    box.appendChild(d);
+  }
+})();
+
+var song=document.getElementById('song'),mute=document.getElementById('mute'),cut=document.getElementById('cut');
+document.getElementById('open').onclick=function(){
+  document.getElementById('welcome').classList.add('gone');
+  mute.style.display='block';
+  song.volume=.6;
+  song.play().catch(function(){});
+  window.scrollTo(0,0);
+};
+mute.onclick=function(){
+  if(song.paused){song.play();cut.style.display='none'}else{song.pause();cut.style.display='block'}
+};
+
+// aparición de capítulos
+var io=new IntersectionObserver(function(es){
+  es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}});
+},{threshold:.25});
+document.querySelectorAll('.chap,.sign').forEach(function(el){io.observe(el)});
+
+// dedicatoria
+var dd=document.getElementById('dedic');
+document.getElementById('dbtn').onclick=function(){dd.classList.add('open')};
+document.getElementById('close').onclick=function(){dd.classList.remove('open')};
+dd.onclick=function(e){if(e.target===dd)dd.classList.remove('open')};
+</script>
+</body>
+</html>
